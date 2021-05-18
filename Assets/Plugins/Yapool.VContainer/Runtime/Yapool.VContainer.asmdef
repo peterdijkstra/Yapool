@@ -1,0 +1,17 @@
+{
+    "name": "Yapool.VContainer",
+    "rootNamespace": "Yapool.VContainer",
+    "references": [
+        "GUID:a9ebaa3645d0a4ba9a7b15738c1cb61a",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
