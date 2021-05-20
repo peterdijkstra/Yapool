@@ -2,8 +2,12 @@ namespace Yapool
 {
 	public class GrowPool<T> : SimplePool<T>
 	{
-		public GrowPool(T source, int instanceCount, IProcessor<T> processor) : base(source, instanceCount, processor)
+		private readonly int _maxInstanceCount;
+
+		public GrowPool(T source, int instanceCount, IProcessor<T> processor, int maxInstanceCount = int.MaxValue) :
+			base(source, instanceCount, processor)
 		{
+			_maxInstanceCount = maxInstanceCount;
 		}
 
 		protected override IInstance<T> GetInstance()
@@ -12,7 +16,7 @@ namespace Yapool
 			var value = this.GetInactiveInstance();
 			if (value == null)
 				value = this.GetOldestInstance();
-			if (value.ActiveSelf)
+			if (value.ActiveSelf && InstanceCount < _maxInstanceCount)
 			{
 				value = CreateInstance();
 				instances.Add(value);

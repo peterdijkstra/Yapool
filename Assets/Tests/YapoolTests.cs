@@ -75,7 +75,7 @@ public class YapoolTests
 
 		// act
 		var pool = new FixedSizePool<MockPoolable>(source, instanceCount, processor);
-		for (int i = 0; i < instanceCount + 1; i++)
+		for (var i = 0; i < instanceCount + 1; i++)
 		{
 			pool.GetObject();
 		}
@@ -98,7 +98,30 @@ public class YapoolTests
 
 		// act
 		var pool = new GrowPool<MockPoolable >(source, instanceCount, processor);
-		for (int i = 0; i < instanceCount + 1; i++)
+		for (var i = 0; i < instanceCount + 1; i++)
+		{
+			pool.GetObject();
+		}
+
+		// assert
+		Assert.That(pool.Source        == source);
+		Assert.That(pool.InstanceCount == instanceCount + 1);
+		Assert.That(pool.Processor     == processor);
+		foreach (var instance in pool.Instances)
+			Assert.That(instance.InstanceObject.Active);
+	}
+	
+	[Test]
+	public void GrowPoolDoesNotGrowBeyondMaxCount()
+	{
+		// arrange
+		var       source        = new MockPoolable();
+		const int instanceCount = 5;
+		var       processor     = new PoolableProcessor<MockPoolable>();
+
+		// act
+		var pool = new GrowPool<MockPoolable >(source, instanceCount, processor, 6);
+		for (var i = 0; i < instanceCount + 2; i++)
 		{
 			pool.GetObject();
 		}
