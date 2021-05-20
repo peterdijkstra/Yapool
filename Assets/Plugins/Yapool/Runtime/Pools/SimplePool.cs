@@ -10,7 +10,7 @@ namespace Yapool
 		public IEnumerable<IInstance<T>> Instances => instances;
 		public IProcessor<T>             Processor { get; }
 
-		public int InstanceCount       { get; protected set; }
+		public int InstanceCount       => instances.Count;
 		public int ActiveInstanceCount { get; private set; }
 
 		protected readonly List<IInstance<T>> instances;
@@ -24,14 +24,14 @@ namespace Yapool
 			
 			// Create instances
 			for (var i = 0; i < instanceCount; i++)
-				instances[i] = CreateInstance();
+				instances.Add(CreateInstance());
 		}
 
 		protected Instance<T> CreateInstance()
 		{
 			var obj      = Processor.CreateObject(Source);
 			var instance = new Instance<T>(obj);
-			InstanceCount = Instances.Count();
+			
 			return instance;
 		}
 

@@ -5,10 +5,12 @@ using UnityEngine;
 
 namespace Yapool
 {
-	public interface IPoolable : ICloneable, IDisposable
+	public interface IPoolable<out T> : IDisposable
 	{
 		bool Active { get; set; }
 
 		void OnCreate();
+
+		T Clone();
 	}
 }

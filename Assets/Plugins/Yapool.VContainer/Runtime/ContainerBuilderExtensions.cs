@@ -23,7 +23,11 @@ public static class ContainerBuilderExtensions
 		{
 			var source    = resolver.Resolve<TSource>();
 			var processor = resolver.Resolve<TProcessor>();
+
 			var pool      = Activator.CreateInstance(typeof(TPool), source, instanceCount, processor);
+			
+			Debug.Log(pool);
+			
 			return pool as TPool;
 		}, lifetime);
 	}

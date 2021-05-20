@@ -1,5 +1,3 @@
-using System;
-
 namespace Yapool
 {
 	public class FixedSizePool<T> : SimplePool<T>

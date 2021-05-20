@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 using VContainer;
 using VContainer.Unity;
 using Yapool;
+using Yapool.VContainer;
 
 public class YapoolTests
 {
@@ -43,25 +44,6 @@ public class YapoolTests
 		// assert
 		Assert.That(instance                 != source);
 		Assert.That(pool.ActiveInstanceCount == 1);
-	}
-
-	public class MockPoolable : IPoolable
-	{
-		public bool Active { get; set; }
-
-		public void OnCreate()
-		{
-		}
-
-		public object Clone()
-		{
-			var clone = new MockPoolable();
-			return clone;
-		}
-
-		public void Dispose()
-		{
-		}
 	}
 
 	[Test]
@@ -155,6 +137,52 @@ public class YapoolTests
 
 		Assert.That(pool.Processor == processor);
 		Assert.That(pool.Processor is GameObjectProcessor);
+	}
+
+	[Test]
+	public void VContainerTest4()
+	{
+		var lifeTimeScope = LifetimeScope.Create(builder =>
+		{
+			builder.Register<SomeService>(Lifetime.Singleton);
+
+			builder.Register<DependantMockPoolable>(Lifetime.Scoped);
+			builder.Register<PoolableProcessor<DependantMockPoolable>>(Lifetime.Scoped);
+
+			builder.RegisterPool
+			<FixedSizePool<DependantMockPoolable>,
+				DependantMockPoolable,
+				PoolableProcessor<DependantMockPoolable>>(5);
+		});
+
+		var pool = lifeTimeScope.Container.Resolve(typeof(FixedSizePool<DependantMockPoolable>)) as FixedSizePool<DependantMockPoolable>;
+		Assert.That(pool != null);
+
+		var obj = pool.GetObject();
+		Assert.That(obj.Service != null);
+	}
+	
+	[Test]
+	public void VContainerTest5()
+	{
+		var lifeTimeScope = LifetimeScope.Create(builder =>
+		{
+			builder.Register<SomeService>(Lifetime.Singleton);
+
+			builder.Register<DependantMockPoolable>(Lifetime.Scoped);
+			builder.Register<PoolableProcessor<DependantMockPoolable>>(Lifetime.Scoped);
+
+			builder.RegisterPool
+			<FixedSizePool<DependantMockPoolable>,
+				DependantMockPoolable,
+				PoolableProcessor<DependantMockPoolable>>(5);
+		});
+
+		var pool = lifeTimeScope.Container.Resolve(typeof(FixedSizePool<DependantMockPoolable>)) as FixedSizePool<DependantMockPoolable>;
+		Assert.That(pool != null);
+
+		var obj = pool.GetObject();
+		Assert.That(obj.Service != null);
 	}
 
 	// A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use

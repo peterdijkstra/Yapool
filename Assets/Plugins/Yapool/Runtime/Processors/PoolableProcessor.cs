@@ -1,10 +1,11 @@
 namespace Yapool
 {
-	public class PoolableProcessor<T> : IProcessor<T> where T : class, IPoolable
+	public class 
+		PoolableProcessor<T> : IProcessor<T> where T : class, IPoolable<T>
 	{
 		public T CreateObject(T source)
 		{
-			var clone = source.Clone() as T;
+			var clone = source.Clone();
 			DisableInstance(clone);
 			return clone;
 		}

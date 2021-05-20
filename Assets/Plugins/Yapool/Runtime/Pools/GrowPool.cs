@@ -13,7 +13,10 @@ namespace Yapool
 			if (value == null)
 				value = this.GetOldestInstance();
 			if (value.ActiveSelf)
+			{
 				value = CreateInstance();
+				instances.Add(value);
+			}
 
 			return value;
 		}
