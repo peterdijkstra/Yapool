@@ -59,10 +59,56 @@ public class YapoolTests
 
 		// assert
 		Assert.That(pool.Source        == source);
-		Assert.That(pool.InstanceCount == 5);
+		Assert.That(pool.InstanceCount == instanceCount);
 		Assert.That(pool.Processor     == processor);
 		foreach (var instance in pool.Instances)
 			Assert.That(instance.InstanceObject.Active == false);
+	}
+
+	[Test]
+	public void FixedPoolDoesNotGrow()
+	{
+		// arrange
+		var       source        = new MockPoolable();
+		const int instanceCount = 5;
+		var       processor     = new PoolableProcessor<MockPoolable>();
+
+		// act
+		var pool = new FixedSizePool<MockPoolable>(source, instanceCount, processor);
+		for (int i = 0; i < instanceCount + 1; i++)
+		{
+			pool.GetObject();
+		}
+
+		// assert
+		Assert.That(pool.Source        == source);
+		Assert.That(pool.InstanceCount == instanceCount);
+		Assert.That(pool.Processor     == processor);
+		foreach (var instance in pool.Instances)
+			Assert.That(instance.InstanceObject.Active);
+	}
+
+	[Test]
+	public void GrowPoolDoesGrow()
+	{
+		// arrange
+		var       source        = new MockPoolable();
+		const int instanceCount = 5;
+		var       processor     = new PoolableProcessor<MockPoolable>();
+
+		// act
+		var pool = new GrowPool<MockPoolable >(source, instanceCount, processor);
+		for (int i = 0; i < instanceCount + 1; i++)
+		{
+			pool.GetObject();
+		}
+
+		// assert
+		Assert.That(pool.Source        == source);
+		Assert.That(pool.InstanceCount == instanceCount + 1);
+		Assert.That(pool.Processor     == processor);
+		foreach (var instance in pool.Instances)
+			Assert.That(instance.InstanceObject.Active);
 	}
 
 	[Test]
